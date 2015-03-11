@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 2014, Ericsson AB. All rights reserved.
- * Copyright (c) 2014, Centricular Ltd
- *     Author: Sebastian Dröge <sebastian@centricular.com>
+ * Copyright (c) 2015, Collabora Ltd.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -25,37 +23,30 @@
  * OF SUCH DAMAGE.
  */
 
-#ifndef __OWR_UTILS_H__
-#define __OWR_UTILS_H__
+#ifndef __OWR_DATA_SESSION_PRIVATE_H__
+#define __OWR_DATA_SESSION_PRIVATE_H__
 
-#include "owr_types.h"
+#include "owr_media_session.h"
 
-#include <glib.h>
 #include <gst/gst.h>
 
 #ifndef __GTK_DOC_IGNORE__
 
 G_BEGIN_DECLS
 
-#define OWR_UNUSED(x) (void)x
-
-void *_owr_require_symbols(void);
-OwrCodecType _owr_caps_to_codec_type(GstCaps *caps);
-void _owr_utils_call_closure_with_list(GClosure *callback, GList *list);
-GClosure *_owr_utils_list_closure_merger_new(GClosure *final_callback, GDestroyNotify list_item_destroy);
-
-/* FIXME: This should be removed when the GStreamer required version
- * is 1.6 and gst_caps_foreach() can be used.
- * Upstream commit: http://cgit.freedesktop.org/gstreamer/gstreamer/commit/?id=bc11a1b79dace8ca73d3367d7c70629f8a6dd7fd 
- * The author of the above commit, Sebastian Dröge, agreed
- * relicensing this copy of the function under BSD 2-Clause. */
-typedef gboolean (*OwrGstCapsForeachFunc) (GstCapsFeatures *features,
-                                           GstStructure    *structure,
-                                           gpointer         user_data);
-gboolean _owr_gst_caps_foreach(const GstCaps *caps, OwrGstCapsForeachFunc func, gpointer user_data);
+void _owr_data_session_clear_closures(OwrDataSession *data_session);
+GstElement * _owr_data_session_create_decoder(OwrDataSession *data_session);
+GstElement * _owr_data_session_create_encoder(OwrDataSession *data_session);
+void _owr_data_session_set_on_datachannel_added(OwrDataSession *data_session,
+    GClosure *on_datachannel_added);
+void _owr_data_session_set_on_sctp_port_set(OwrDataSession *data_session, GClosure *on_port_set);
+OwrDataChannel * _owr_data_session_get_datachannel(OwrDataSession *data_session, guint16 id);
+GList * _owr_data_session_get_datachannels(OwrDataSession *data_session);
+gchar * _owr_data_session_get_encoder_name(OwrDataSession *data_session);
+gchar * _owr_data_session_get_decoder_name(OwrDataSession *data_session);
 
 G_END_DECLS
 
-#endif /* __GTK_DOC_IGNORE__ */
+#endif /* #ifndef __GTK_DOC_IGNORE__ */
 
-#endif /* __OWR_UTILS_H__ */
+#endif /* __OWR_MEDIA_SESSION_PRIVATE_H__ */

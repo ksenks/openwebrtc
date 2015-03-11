@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 2014, Ericsson AB. All rights reserved.
- * Copyright (c) 2014, Centricular Ltd
- *     Author: Sebastian Dröge <sebastian@centricular.com>
+ * Copyright (c) 2015, Collabora Ltd.
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -25,37 +23,39 @@
  * OF SUCH DAMAGE.
  */
 
-#ifndef __OWR_UTILS_H__
-#define __OWR_UTILS_H__
-
-#include "owr_types.h"
-
-#include <glib.h>
-#include <gst/gst.h>
+#ifndef __OWR_DATA_CHANNEL_PROTOCOL_H__
+#define __OWR_DATA_CHANNEL_PROTOCOL_H__
 
 #ifndef __GTK_DOC_IGNORE__
 
-G_BEGIN_DECLS
+typedef enum {
+    OWR_DATA_CHANNEL_MESSAGE_TYPE_ACK = 2,
+    OWR_DATA_CHANNEL_MESSAGE_TYPE_OPEN_REQUEST = 3
+} OwrDataChannelMessageType;
 
-#define OWR_UNUSED(x) (void)x
+typedef enum  {
+    OWR_DATA_CHANNEL_CHANNEL_TYPE_RELIABLE = 0x00,
+    OWR_DATA_CHANNEL_CHANNEL_TYPE_RELIABLE_UNORDERED = 0x80,
+    OWR_DATA_CHANNEL_CHANNEL_TYPE_PARTIAL_RELIABLE_REMIX = 0x01,
+    OWR_DATA_CHANNEL_CHANNEL_TYPE_PARTIAL_RELIABLE_REMIX_UNORDERED = 0x81,
+    OWR_DATA_CHANNEL_CHANNEL_TYPE_PARTIAL_RELIABLE_TIMED = 0x02,
+    OWR_DATA_CHANNEL_CHANNEL_TYPE_PARTIAL_RELIABLE_TIMED_UNORDERED = 0x82
+} OwrDataChannelChannelType;
 
-void *_owr_require_symbols(void);
-OwrCodecType _owr_caps_to_codec_type(GstCaps *caps);
-void _owr_utils_call_closure_with_list(GClosure *callback, GList *list);
-GClosure *_owr_utils_list_closure_merger_new(GClosure *final_callback, GDestroyNotify list_item_destroy);
+typedef enum {
+    OWR_DATA_CHANNEL_PPID_CONTROL = 50,
+    OWR_DATA_CHANNEL_PPID_STRING = 51,
+    OWR_DATA_CHANNEL_PPID_BINARY_PARTIAL = 52, /* Deprecated */
+    OWR_DATA_CHANNEL_PPID_BINARY = 53,
+    OWR_DATA_CHANNEL_PPID_STRING_PARTIAL = 54 /* Deprecated */
+} OwrDataChannelPPID;
 
-/* FIXME: This should be removed when the GStreamer required version
- * is 1.6 and gst_caps_foreach() can be used.
- * Upstream commit: http://cgit.freedesktop.org/gstreamer/gstreamer/commit/?id=bc11a1b79dace8ca73d3367d7c70629f8a6dd7fd 
- * The author of the above commit, Sebastian Dröge, agreed
- * relicensing this copy of the function under BSD 2-Clause. */
-typedef gboolean (*OwrGstCapsForeachFunc) (GstCapsFeatures *features,
-                                           GstStructure    *structure,
-                                           gpointer         user_data);
-gboolean _owr_gst_caps_foreach(const GstCaps *caps, OwrGstCapsForeachFunc func, gpointer user_data);
-
-G_END_DECLS
+typedef enum {
+    OWR_DATA_CHANNEL_STATE_CONNECTING,
+    OWR_DATA_CHANNEL_STATE_OPEN,
+    OWR_DATA_CHANNEL_STATE_CLOSING,
+    OWR_DATA_CHANNEL_STATE_CLOSED
+} OwrDataChannelState;
 
 #endif /* __GTK_DOC_IGNORE__ */
-
-#endif /* __OWR_UTILS_H__ */
+#endif /* __OWR_DATA_CHANNEL_PROTOCOL_H__ */
